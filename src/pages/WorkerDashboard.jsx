@@ -30,7 +30,7 @@ const WorkerDashboard = () => {
           const userDocSnap = await getDoc(userDocRef);
           if (userDocSnap.exists()) {
             const data = userDocSnap.data();
-            
+
             // Inject mock admin remark for demonstration if it doesn't exist
             if (!data.adminRemark) {
               data.adminRemark = "FLAGGED: Involved in a property dispute / petty theft incident reported on 12/04/2025 at Ernakulam central station. Case #402-B pending review.";
@@ -106,7 +106,7 @@ const WorkerDashboard = () => {
   const fetchHistory = async () => {
     setActiveTab('history');
     if (workHistory.length > 0) return; // already fetched
-    
+
     setIsFetchingHistory(true);
     try {
       const historyRef = collection(db, 'users', currentUser.uid, 'workHistory');
@@ -162,11 +162,11 @@ const WorkerDashboard = () => {
     }}>
       {/* Top Left Logo */}
       <div style={{ position: 'absolute', top: '25px', left: '35px' }}>
-        <h2 style={{ 
-          margin: 0, 
-          fontSize: '1.8rem', 
-          fontWeight: '700', 
-          color: '#fff', 
+        <h2 style={{
+          margin: 0,
+          fontSize: '1.8rem',
+          fontWeight: '700',
+          color: '#fff',
           letterSpacing: '3px',
           textShadow: '0 0 10px rgba(225, 65, 236, 0.4)'
         }}>
@@ -176,7 +176,7 @@ const WorkerDashboard = () => {
 
       {/* Top Right Account Button */}
       <div style={{ position: 'absolute', top: '25px', right: '35px' }}>
-        <button 
+        <button
           onClick={() => { setShowProfileModal(true); setActiveTab('profile'); }}
           style={{
             background: 'rgba(255, 255, 255, 0.1)',
@@ -204,7 +204,7 @@ const WorkerDashboard = () => {
           }}
         >
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
           Account
         </button>
@@ -237,7 +237,7 @@ const WorkerDashboard = () => {
         alignItems: 'center',
         zIndex: 1
       }}>
-        
+
         {/* User Info Section */}
         <div style={{ marginBottom: '2rem', textAlign: 'center', width: '100%' }}>
           <h2 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', color: '#fff', letterSpacing: '1px' }}>
@@ -247,11 +247,11 @@ const WorkerDashboard = () => {
             {currentUser?.email || 'worker@example.com'}
           </p>
           {userData?.isVerified ? (
-            <span style={{ 
-              background: 'rgba(0, 200, 83, 0.2)', 
-              color: '#00e676', 
-              padding: '4px 10px', 
-              borderRadius: '12px', 
+            <span style={{
+              background: 'rgba(0, 200, 83, 0.2)',
+              color: '#00e676',
+              padding: '4px 10px',
+              borderRadius: '12px',
               fontSize: '0.8rem',
               fontFamily: '"Inter", sans-serif',
               border: '1px solid rgba(0, 200, 83, 0.4)'
@@ -259,11 +259,11 @@ const WorkerDashboard = () => {
               ✓ Aadhar Verified
             </span>
           ) : (
-            <span style={{ 
-              background: 'rgba(255, 152, 0, 0.2)', 
-              color: '#ff9800', 
-              padding: '4px 10px', 
-              borderRadius: '12px', 
+            <span style={{
+              background: 'rgba(255, 152, 0, 0.2)',
+              color: '#ff9800',
+              padding: '4px 10px',
+              borderRadius: '12px',
               fontSize: '0.8rem',
               fontFamily: '"Inter", sans-serif',
               border: '1px solid rgba(255, 152, 0, 0.4)'
@@ -287,25 +287,25 @@ const WorkerDashboard = () => {
           transition: 'transform 0.3s ease',
           overflow: 'hidden'
         }}
-        onMouseOver={(e) => {
-          if (userData?.isVerified) e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          onMouseOver={(e) => {
+            if (userData?.isVerified) e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
           {userData?.isVerified ? (
             <canvas ref={canvasRef} style={{ width: 180, height: 180, borderRadius: '8px' }}></canvas>
           ) : (
             <>
               {/* Blurred Placeholder */}
-              <div style={{ 
-                width: 180, 
-                height: 180, 
+              <div style={{
+                width: 180,
+                height: 180,
                 background: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpath d=\'M10 10h30v30H10zM60 10h30v30H60zM10 60h30v30H10z\' fill=\'%230b0b0b\'/%3E%3Cpath d=\'M60 60h10v10H60zM80 60h10v10H80zM60 80h10v10H60zM80 80h10v10H80z\' fill=\'%230b0b0b\'/%3E%3C/svg>")',
                 backgroundSize: 'cover',
                 filter: 'blur(8px)',
                 opacity: 0.5
               }}></div>
-              
+
               {/* Instructional Overlay */}
               <div style={{
                 position: 'absolute',
@@ -320,12 +320,12 @@ const WorkerDashboard = () => {
                 backdropFilter: 'blur(2px)'
               }}>
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="#0b0b0b" style={{ marginBottom: '10px' }}>
-                  <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                  <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
                 </svg>
-                <p style={{ 
-                  margin: 0, 
-                  color: '#0b0b0b', 
-                  fontFamily: '"Inter", sans-serif', 
+                <p style={{
+                  margin: 0,
+                  color: '#0b0b0b',
+                  fontFamily: '"Inter", sans-serif',
                   fontSize: '0.9rem',
                   fontWeight: 'bold'
                 }}>
@@ -337,7 +337,7 @@ const WorkerDashboard = () => {
         </div>
 
         {/* Logout Button */}
-        <button 
+        <button
           onClick={handleLogout}
           style={{
             width: '100%',
@@ -392,7 +392,7 @@ const WorkerDashboard = () => {
             transition: 'max-width 0.3s ease'
           }}>
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowProfileModal(false)}
               style={{
                 position: 'absolute', top: '15px', right: '15px',
@@ -403,13 +403,13 @@ const WorkerDashboard = () => {
             >
               ✕
             </button>
-            
+
             {/* Tabs */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <button onClick={() => setActiveTab('profile')} style={tabStyle('profile')}>Profile</button>
               <button onClick={fetchHistory} style={tabStyle('history')}>Work History</button>
             </div>
-            
+
             {/* Tab Content: Profile */}
             {activeTab === 'profile' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontFamily: '"Inter", sans-serif' }}>
@@ -427,7 +427,7 @@ const WorkerDashboard = () => {
                   }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px' }}>
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                       </svg>
                       OFFICIAL GOVT/ADMIN REMARK
                     </div>
@@ -436,11 +436,11 @@ const WorkerDashboard = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#b0b0b0' }}>Full Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     style={{
@@ -450,11 +450,11 @@ const WorkerDashboard = () => {
                     }}
                   />
                 </div>
-                
+
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#b0b0b0' }}>Age</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={editAge}
                     onChange={(e) => setEditAge(e.target.value)}
                     style={{
@@ -467,8 +467,8 @@ const WorkerDashboard = () => {
 
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#b0b0b0' }}>Place / City</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={editPlace}
                     onChange={(e) => setEditPlace(e.target.value)}
                     style={{
@@ -479,7 +479,7 @@ const WorkerDashboard = () => {
                   />
                 </div>
 
-                <button 
+                <button
                   onClick={handleVerify}
                   disabled={isVerifying || userData?.isVerified}
                   style={{
@@ -523,13 +523,13 @@ const WorkerDashboard = () => {
                     </thead>
                     <tbody>
                       {workHistory.map((job, idx) => (
-                        <tr key={job.id} style={{ 
-                          borderBottom: '1px solid rgba(255, 255, 255, 0.05)', 
+                        <tr key={job.id} style={{
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                           background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
                           transition: 'background 0.2s ease'
                         }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'}
                         >
                           <td style={{ padding: '14px 8px', color: '#b0b0b0' }}>{job.sno || idx + 1}</td>
                           <td style={{ padding: '14px 8px', fontWeight: 'bold' }}>{job.location}</td>
