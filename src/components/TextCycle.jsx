@@ -45,7 +45,9 @@ const TextCycle = () => {
       textAlign: 'center',
       zIndex: 10,
       color: 'white',
-      pointerEvents: 'none'
+      pointerEvents: 'none',
+      fontFamily: '"Advent Pro", sans-serif',
+      fontOpticalSizing: 'auto'
     }}>
       <h1 style={{
         fontSize: 'clamp(3rem, 8vw, 6rem)',
