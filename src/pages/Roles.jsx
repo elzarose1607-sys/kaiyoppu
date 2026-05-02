@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const Roles = () => {
   const navigate = useNavigate();
   const { currentUser, userRole, setUserRole, logout } = useAuth();
+  const { t } = useTranslation();
   
   useEffect(() => {
     // If they already have a valid mapped role in DB, jump to dashboard immediately
@@ -16,8 +19,8 @@ const Roles = () => {
   }, [userRole, navigate]);
 
   const roles = [
-    { id: 'worker', name: 'Worker', desc: 'Find your dream job' },
-    { id: 'hirer', name: 'Hirer', desc: 'Hire the best talent' },
+    { id: 'worker', name: t('role_worker'), desc: t('role_worker_desc') },
+    { id: 'hirer', name: t('role_hirer'), desc: t('role_hirer_desc') },
     { id: 'admin', name: 'Administrator', desc: 'Manage platform settings' }
   ];
 
@@ -63,16 +66,20 @@ const Roles = () => {
       alignItems: 'center',
       fontFamily: '"Advent Pro", "Inter", sans-serif',
       margin: 0,
+      position: 'relative',
       overflow: 'hidden'
     }}>
+      <div style={{ position: 'absolute', top: '20px', right: '30px', zIndex: 10 }}>
+        <LanguageSwitcher />
+      </div>
       <h1 style={{ 
         color: '#e141ec', 
         fontSize: '3rem',
         textShadow: '0 0 15px rgba(225, 65, 236, 0.4)',
         marginBottom: '10px',
         fontOpticalSizing: 'auto'
-      }}>Select Role</h1>
-      <p style={{ color: '#d0d0d0', marginBottom: '40px', letterSpacing: '2px', fontFamily: '"Inter", sans-serif' }}>Choose your path to continue</p>
+      }}>{t('roles_title')}</h1>
+      <p style={{ color: '#d0d0d0', marginBottom: '40px', letterSpacing: '2px', fontFamily: '"Inter", sans-serif' }}>{t('roles_desc')}</p>
       
       <div style={{
         display: 'flex',

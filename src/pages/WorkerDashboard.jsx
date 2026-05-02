@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { doc, getDoc, updateDoc, collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const WorkerDashboard = () => {
+  const { t } = useTranslation();
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const canvasRef = useRef(null);
@@ -49,9 +52,6 @@ const WorkerDashboard = () => {
           const userDocSnap = await getDoc(userDocRef);
           if (userDocSnap.exists()) {
             const data = userDocSnap.data();
-            if (!data.adminRemark) {
-              data.adminRemark = "FLAGGED: Involved in a property dispute / petty theft incident reported on 12/04/2025 at Ernakulam central station. Case #402-B pending review.";
-            }
             setUserData(data);
             setEditName(data.name || currentUser.displayName || '');
             setEditAge(data.age || '');
@@ -272,12 +272,14 @@ const WorkerDashboard = () => {
     }}>
       <div style={{ position: 'absolute', top: '25px', left: '35px', zIndex: 10 }}>
         <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '700', color: '#fff', letterSpacing: '3px', textShadow: '0 0 10px rgba(225, 65, 236, 0.4)' }}>
-          KAIYOPPU
+          {t('app_name')}
         </h2>
       </div>
 
-      <div style={{ position: 'absolute', top: '25px', right: '35px', display: 'flex', gap: '15px', zIndex: 10 }}>
+      <div style={{ position: 'absolute', top: '25px', right: '35px', display: 'flex', gap: '15px', zIndex: 10, alignItems: 'center' }}>
         
+        <LanguageSwitcher />
+
         {/* Notifications Button */}
         <button
           onClick={fetchNotifications}
@@ -297,7 +299,7 @@ const WorkerDashboard = () => {
             gap: '8px'
           }}
         >
-          🔔 Notifications
+          🔔 {t('notifications')}
         </button>
 
         <button
@@ -318,7 +320,7 @@ const WorkerDashboard = () => {
             gap: '8px'
           }}
         >
-          Look for Hirers
+          {t('look_for_hirers')}
         </button>
 
         <button
@@ -339,7 +341,7 @@ const WorkerDashboard = () => {
             gap: '8px'
           }}
         >
-          Account
+          {t('account')}
         </button>
       </div>
 
@@ -347,7 +349,7 @@ const WorkerDashboard = () => {
         fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem', color: '#e141ec',
         textShadow: '0 0 15px rgba(225, 65, 236, 0.5)', letterSpacing: '2px', textAlign: 'center'
       }}>
-        Worker Dashboard
+        {t('worker_dash')}
       </h1>
 
       <div style={{
@@ -361,9 +363,9 @@ const WorkerDashboard = () => {
           <p style={{ fontSize: '1.1rem', color: '#d0d0d0', margin: '0 0 8px 0', fontFamily: '"Inter", sans-serif' }}>{currentUser?.email}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
             {userData?.isVerified ? (
-              <span style={{ background: 'rgba(0, 200, 83, 0.2)', color: '#00e676', padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem', border: '1px solid rgba(0, 200, 83, 0.4)' }}>✓ Aadhar Verified</span>
+              <span style={{ background: 'rgba(0, 200, 83, 0.2)', color: '#00e676', padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem', border: '1px solid rgba(0, 200, 83, 0.4)' }}>{t('verified')}</span>
             ) : (
-              <span style={{ background: 'rgba(255, 152, 0, 0.2)', color: '#ff9800', padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem', border: '1px solid rgba(255, 152, 0, 0.4)' }}>⚠ Profile Unverified</span>
+              <span style={{ background: 'rgba(255, 152, 0, 0.2)', color: '#ff9800', padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem', border: '1px solid rgba(255, 152, 0, 0.4)' }}>{t('unverified')}</span>
             )}
           </div>
           <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
@@ -378,7 +380,7 @@ const WorkerDashboard = () => {
                 padding: '6px 15px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer'
               }}
             >
-              {isUpdatingStatus ? 'Updating...' : workerStatus}
+              {isUpdatingStatus ? t('updating') : workerStatus === 'Looking for job' ? t('status_looking') : t('status_hired')}
             </button>
           </div>
         </div>
@@ -392,7 +394,7 @@ const WorkerDashboard = () => {
             <canvas ref={canvasRef} style={{ width: 180, height: 180, borderRadius: '8px' }}></canvas>
           ) : (
             <div style={{ width: 180, height: 180, display: 'flex', alignItems: 'center', textAlign: 'center', color: '#0b0b0b', fontWeight: 'bold' }}>
-              Please verify your Aadhar in Account to view your QR.
+              {t('qr_unverified_msg')}
             </div>
           )}
         </div>
@@ -420,33 +422,33 @@ const WorkerDashboard = () => {
             width: '90%', maxWidth: '600px', boxShadow: '0 15px 35px rgba(0,0,0,0.5)', position: 'relative'
           }}>
             <button onClick={() => setShowNotificationsModal(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', zIndex: 10 }}>✕</button>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#e141ec', textAlign: 'center', fontFamily: '"Inter", sans-serif' }}>Notifications</h2>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#e141ec', textAlign: 'center', fontFamily: '"Inter", sans-serif' }}>{t('notifications')}</h2>
             
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <button onClick={() => setNotifTab('received')} style={tabStyle('received', notifTab)}>Received Invitations</button>
-              <button onClick={() => setNotifTab('sent')} style={tabStyle('sent', notifTab)}>Sent Applications</button>
+              <button onClick={() => setNotifTab('received')} style={tabStyle('received', notifTab)}>{t('received_invitations')}</button>
+              <button onClick={() => setNotifTab('sent')} style={tabStyle('sent', notifTab)}>{t('sent_applications')}</button>
             </div>
 
             <div style={{ overflowY: 'auto', maxHeight: '400px', paddingRight: '10px', fontFamily: '"Inter", sans-serif' }}>
               {loadingNotifs ? (
                 <div style={{ textAlign: 'center', color: '#b0b0b0', padding: '20px' }}>Loading...</div>
               ) : notifTab === 'received' ? (
-                receivedNotifs.length === 0 ? <div style={{ textAlign: 'center', color: '#888' }}>No invitations received.</div> : (
+                receivedNotifs.length === 0 ? <div style={{ textAlign: 'center', color: '#888' }}>{t('no_invitations_received')}</div> : (
                   <div style={{ display: 'grid', gap: '15px' }}>
                     {receivedNotifs.map(n => (
                       <div key={n.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>{n.fromName} invited you!</div>
+                        <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>{n.fromName} {t('invited_you')}</div>
                         <div style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '10px' }}>{n.fromEmail}</div>
                         <div style={{ display: 'flex', gap: '10px' }}>
                           {n.status === 'pending' ? (
                             <>
-                              <button onClick={() => handleUpdateNotifStatus(n.id, 'accepted')} style={{ background: '#00e676', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Accept</button>
-                              <button onClick={() => handleUpdateNotifStatus(n.id, 'rejected')} style={{ background: 'transparent', color: '#ff4c4c', border: '1px solid #ff4c4c', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}>Reject</button>
+                              <button onClick={() => handleUpdateNotifStatus(n.id, 'accepted')} style={{ background: '#00e676', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>{t('accept')}</button>
+                              <button onClick={() => handleUpdateNotifStatus(n.id, 'rejected')} style={{ background: 'transparent', color: '#ff4c4c', border: '1px solid #ff4c4c', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}>{t('reject')}</button>
                             </>
                           ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                               <div style={{ color: n.status === 'accepted' ? '#00e676' : '#ff4c4c', fontWeight: 'bold' }}>
-                                Status: {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
+                                Status: {n.status === 'accepted' ? t('status_accepted') : n.status === 'rejected' ? t('status_rejected') : t('status_pending')}
                               </div>
                               {n.status === 'accepted' && (
                                 <div style={{ color: '#00e676', fontWeight: 'bold' }}>📞 +91 9876543210</div>
@@ -459,12 +461,12 @@ const WorkerDashboard = () => {
                   </div>
                 )
               ) : (
-                sentNotifs.length === 0 ? <div style={{ textAlign: 'center', color: '#888' }}>No applications sent.</div> : (
+                sentNotifs.length === 0 ? <div style={{ textAlign: 'center', color: '#888' }}>{t('no_applications_sent')}</div> : (
                   <div style={{ display: 'grid', gap: '15px' }}>
                     {sentNotifs.map(n => (
                       <div key={n.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>Applied to {n.toName}</div>
-                        <div style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '10px' }}>Status: {n.status.charAt(0).toUpperCase() + n.status.slice(1)}</div>
+                        <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>{t('applied_to')} {n.toName}</div>
+                        <div style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '10px' }}>Status: {n.status === 'accepted' ? t('status_accepted') : n.status === 'rejected' ? t('status_rejected') : t('status_pending')}</div>
                         {n.status === 'accepted' && (
                           <div style={{ color: '#00e676', fontWeight: 'bold' }}>📞 +91 9876543210</div>
                         )}
@@ -491,17 +493,39 @@ const WorkerDashboard = () => {
           }}>
             <button onClick={() => setShowProfileModal(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', zIndex: 10 }}>✕</button>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <button onClick={() => setActiveTab('profile')} style={tabStyle('profile', activeTab)}>Profile</button>
-              <button onClick={fetchHistory} style={tabStyle('history', activeTab)}>Work History</button>
+              <button onClick={() => setActiveTab('profile')} style={tabStyle('profile', activeTab)}>{t('profile')}</button>
+              <button onClick={fetchHistory} style={tabStyle('history', activeTab)}>{t('work_history')}</button>
             </div>
             {/* Account Form UI */}
             {activeTab === 'profile' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontFamily: '"Inter", sans-serif' }}>
-                <input type="text" placeholder="Full Name" value={editName} onChange={(e) => setEditName(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
-                <input type="number" placeholder="Age" value={editAge} onChange={(e) => setEditAge(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
-                <input type="text" placeholder="Place" value={editPlace} onChange={(e) => setEditPlace(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
+                {userData?.adminRemark && (
+                  <div style={{
+                    padding: '12px 15px',
+                    background: userData.adminRemark.toLowerCase().includes('reject') || userData.adminRemark.toLowerCase().includes('case') || userData.adminRemark.toLowerCase().includes('failed') ? 'rgba(255, 76, 76, 0.1)' : 'rgba(0, 230, 118, 0.1)',
+                    border: userData.adminRemark.toLowerCase().includes('reject') || userData.adminRemark.toLowerCase().includes('case') || userData.adminRemark.toLowerCase().includes('failed') ? '1px solid rgba(255, 76, 76, 0.4)' : '1px solid rgba(0, 230, 118, 0.4)',
+                    borderRadius: '8px',
+                    color: userData.adminRemark.toLowerCase().includes('reject') || userData.adminRemark.toLowerCase().includes('case') || userData.adminRemark.toLowerCase().includes('failed') ? '#ff4c4c' : '#00e676',
+                    fontSize: '0.85rem',
+                    textAlign: 'left',
+                    boxShadow: userData.adminRemark.toLowerCase().includes('reject') || userData.adminRemark.toLowerCase().includes('case') || userData.adminRemark.toLowerCase().includes('failed') ? '0 0 10px rgba(255, 76, 76, 0.2)' : '0 0 10px rgba(0, 230, 118, 0.2)'
+                  }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.5px' }}>
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                      </svg>
+                      OFFICIAL GOVT/ADMIN REMARK
+                    </div>
+                    <div style={{ lineHeight: '1.4', color: userData.adminRemark.toLowerCase().includes('reject') || userData.adminRemark.toLowerCase().includes('case') || userData.adminRemark.toLowerCase().includes('failed') ? '#ffb3b3' : '#b3ffcc' }}>
+                      {userData.adminRemark}
+                    </div>
+                  </div>
+                )}
+                <input type="text" placeholder={t('full_name')} value={editName} onChange={(e) => setEditName(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
+                <input type="number" placeholder={t('age')} value={editAge} onChange={(e) => setEditAge(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
+                <input type="text" placeholder={t('place')} value={editPlace} onChange={(e) => setEditPlace(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', boxSizing: 'border-box' }} />
                 <button onClick={handleVerify} disabled={isVerifying || userData?.isVerified} style={{ marginTop: '15px', width: '100%', padding: '12px', fontSize: '1rem', fontWeight: 'bold', color: '#fff', backgroundColor: userData?.isVerified ? '#2e7d32' : '#e141ec', border: 'none', borderRadius: '8px', cursor: userData?.isVerified ? 'default' : 'pointer' }}>
-                  {isVerifying ? 'Verifying...' : userData?.isVerified ? '✓ Verified' : 'Verify using Aadhar'}
+                  {isVerifying ? 'Verifying...' : userData?.isVerified ? t('verified') : t('verify_aadhar')}
                 </button>
               </div>
             )}
@@ -509,7 +533,7 @@ const WorkerDashboard = () => {
               <div style={{ overflowX: 'auto', maxHeight: '400px', overflowY: 'auto' }}>
                 {isFetchingHistory ? <div style={{ textAlign: 'center', padding: '20px' }}>Loading...</div> : (
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left' }}>
-                    <thead><tr style={{ borderBottom: '1px solid rgba(225, 65, 236, 0.4)', color: '#e141ec' }}><th>S.No</th><th>Where</th><th>What</th><th>Duration</th><th>Amount</th><th>Remark</th></tr></thead>
+                    <thead><tr style={{ borderBottom: '1px solid rgba(225, 65, 236, 0.4)', color: '#e141ec' }}><th>{t('sno')}</th><th>{t('where')}</th><th>{t('what')}</th><th>{t('duration')}</th><th>{t('amount')}</th><th>{t('remark')}</th></tr></thead>
                     <tbody>
                       {workHistory.map((job, idx) => (
                         <tr key={job.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -537,7 +561,7 @@ const WorkerDashboard = () => {
             width: '90%', maxWidth: '600px', position: 'relative'
           }}>
             <button onClick={() => setShowHirersModal(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', zIndex: 10 }}>✕</button>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#e141ec', textAlign: 'center', fontFamily: '"Inter", sans-serif' }}>Available Hirers</h2>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#e141ec', textAlign: 'center', fontFamily: '"Inter", sans-serif' }}>{t('available_hirers')}</h2>
             
             <div style={{ overflowY: 'auto', maxHeight: '400px', paddingRight: '10px', fontFamily: '"Inter", sans-serif' }}>
               {loadingHirers ? <div style={{ textAlign: 'center', padding: '20px' }}>Loading hirers...</div> : (
@@ -546,10 +570,10 @@ const WorkerDashboard = () => {
                     <div key={hirer.id} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '15px', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <span style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>{hirer.name || hirer.displayName || 'Unnamed Hirer'}</span>
-                        <span style={{ color: '#00e676', fontSize: '0.8rem', background: 'rgba(0, 230, 118, 0.1)', padding: '4px 8px', borderRadius: '10px' }}>Active</span>
+                        <span style={{ color: '#00e676', fontSize: '0.8rem', background: 'rgba(0, 230, 118, 0.1)', padding: '4px 8px', borderRadius: '10px' }}>{t('active')}</span>
                       </div>
                       <span style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '5px' }}>✉️ {hirer.email}</span>
-                      <span style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '15px' }}>📍 {hirer.place || 'Location not specified'}</span>
+                      <span style={{ color: '#b0b0b0', fontSize: '0.9rem', marginBottom: '15px' }}>📍 {hirer.place || t('location_not_specified')}</span>
                       <div style={{ display: 'flex', gap: '10px', marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px' }}>
                         {(() => {
                           const sentReq = sentNotifs.find(n => n.toUid === hirer.id);
@@ -557,15 +581,15 @@ const WorkerDashboard = () => {
                             if (sentReq.status === 'accepted') {
                               return <div style={{ flex: 1, background: 'rgba(0, 230, 118, 0.1)', color: '#00e676', padding: '8px', borderRadius: '8px', textAlign: 'center', fontWeight: 'bold' }}>📞 +91 9876543210</div>;
                             } else if (sentReq.status === 'rejected') {
-                              return <div style={{ flex: 1, background: 'rgba(255, 76, 76, 0.1)', color: '#ff4c4c', padding: '8px', borderRadius: '8px', textAlign: 'center', fontWeight: 'bold' }}>Rejected</div>;
+                              return <div style={{ flex: 1, background: 'rgba(255, 76, 76, 0.1)', color: '#ff4c4c', padding: '8px', borderRadius: '8px', textAlign: 'center', fontWeight: 'bold' }}>{t('status_rejected')}</div>;
                             } else {
-                              return <div style={{ flex: 1, background: 'rgba(255, 255, 255, 0.1)', color: '#b0b0b0', padding: '8px', borderRadius: '8px', textAlign: 'center', fontWeight: 'bold' }}>Pending...</div>;
+                              return <div style={{ flex: 1, background: 'rgba(255, 255, 255, 0.1)', color: '#b0b0b0', padding: '8px', borderRadius: '8px', textAlign: 'center', fontWeight: 'bold' }}>{t('status_pending')}</div>;
                             }
                           } else {
-                            return <button onClick={() => handleApply(hirer)} style={{ flex: 1, background: '#e141ec', color: '#fff', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Apply for Work</button>;
+                            return <button onClick={() => handleApply(hirer)} style={{ flex: 1, background: '#e141ec', color: '#fff', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>{t('apply_for_work')}</button>;
                           }
                         })()}
-                        <button onClick={() => handleBlock(hirer.id)} style={{ background: 'transparent', color: '#ff4c4c', border: '1px solid rgba(255, 76, 76, 0.4)', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer' }}>Report</button>
+                        <button onClick={() => handleBlock(hirer.id)} style={{ background: 'transparent', color: '#ff4c4c', border: '1px solid rgba(255, 76, 76, 0.4)', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer' }}>{t('report')}</button>
                       </div>
                     </div>
                   ))}
